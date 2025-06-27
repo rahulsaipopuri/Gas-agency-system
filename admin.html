@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css" />
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Dashboard</h2>
+
+    <!-- 🔎 Filter Bookings by Date -->
+    <div class="filter-section">
+      <label for="filterDate">Filter by Booking Date:</label>
+      <input type="date" id="filterDate">
+      <button onclick="loadRequests()">Apply Filter</button>
+    </div>
+
+    <!-- 🧾 Normal Booking Requests -->
+    <div class="feature-section">
+      <h3>Normal Booking Requests</h3>
+      <div id="bookingList">Loading booking requests...</div>
+    </div>
+
+    <!-- ➕ Extra Cylinder Requests -->
+    <div class="feature-section">
+      <h3>Extra Cylinder Requests</h3>
+      <div id="requestList">Loading extra requests...</div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gas Booking Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+
+  <h1>Welcome to Gas Booking Dashboard</h1>
+
+  <button onclick="showBookingForm()">New Booking</button>
+  <button onclick="showHistory()">View Booking History</button>
+  <button onclick="requestExtraCylinder()">Request Extra Cylinder</button>
+
+  <!-- Booking Form -->
+  <div id="bookingForm" class="hidden">
+    <h2>Book a Cylinder</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" />
+
+    <label for="mobileNumber">Mobile Number:</label>
+    <input type="text" id="mobileNumber" />
+
+    <label for="bookingDate">Booking Date:</label>
+    <input type="date" id="bookingDate" />
+
+    <label for="paymentMethod">Payment Method:</label>
+    <select id="paymentMethod">
+      <option>Cash on Delivery</option>
+      <option>Online Payment</option>
+    </select>
+
+    <br/><br/>
+    <button onclick="submitBooking()">Submit Booking</button>
+  </div>
+
+  <!-- History Section -->
+  <div id="historySection" class="hidden">
+    <h2>Your Booking History</h2>
+    <ul id="historyList"></ul>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

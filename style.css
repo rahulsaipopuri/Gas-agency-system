@@ -1,0 +1,144 @@
+/* Reset default styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(120deg, #4e54c8, #8f94fb);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: #333;
+}
+
+/* Admin button in top right */
+.admin-login-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.admin-login-btn:hover {
+  background-color: #23272b;
+}
+.Container.admin {
+  background: rgb(239, 238, 238);
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(14, 14, 14, 0.15);
+  width: 350px;
+  text-align: center;
+}
+
+/* Container styling */
+.container {
+  background: rgb(239, 238, 238);
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(14, 14, 14, 0.15);
+  width: 350px;
+  text-align: center;
+}
+
+
+
+/* Form toggle buttons */
+.form-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.form-toggle button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #faf6f6;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-toggle button:hover {
+  background-color: #6f6e6e;
+}
+
+/* Form fields */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4e54c8;
+}
+
+/* Submit buttons */
+button[type="button"] {
+  background-color: #4e54c8;
+  color: white;
+  border: none;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="button"]:hover {
+  background-color: #3d42a1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Top-right user login button (visible only in admin view) */
+.top-right {
+  position: absolute;
+  top: 20px;
+  right: 140px; /* Adjusted to not overlap with admin login button */
+}
+
+.top-right button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.top-right button:hover {
+  background-color: #218838;
+}
+
