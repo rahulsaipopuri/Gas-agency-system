@@ -1,11 +1,9 @@
-/* Base Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #f0f2f5;
@@ -13,7 +11,6 @@ body {
   padding: 20px;
 }
 
-/* Main Container */
 .container {
   max-width: 1000px;
   margin: auto;
@@ -23,14 +20,12 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Page Title */
 h2 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 30px;
 }
 
-/* Section Headings */
 h3 {
   color: #34495e;
   margin-bottom: 15px;
@@ -38,7 +33,6 @@ h3 {
   padding-left: 10px;
 }
 
-/* Feature Section Container */
 .feature-section {
   margin-bottom: 30px;
   padding: 20px;
@@ -52,7 +46,6 @@ h3 {
   background: #f5faff;
 }
 
-/* Booking List Items */
 #adminBookingList {
   list-style: none;
   padding: 0;
@@ -71,7 +64,6 @@ h3 {
   background: #dff0ff;
 }
 
-/* Button Style */
 .button {
   padding: 10px 20px;
   background: #3498db;
@@ -87,7 +79,6 @@ h3 {
   background: #2980b9;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 15px;

@@ -44,7 +44,11 @@ function loadNormalBookings() {
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const bookingDate = data.bookingDate?.toDate().toLocaleDateString() || "N/A";
+
+        let bookingDate = "N/A";
+        if (data.bookingDate && typeof data.bookingDate.toDate === "function") {
+          bookingDate = data.bookingDate.toDate().toLocaleDateString();
+        }
 
         const div = document.createElement("div");
         div.innerHTML = `
@@ -84,7 +88,11 @@ function loadExtraCylinderRequests() {
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const requestedAt = data.requestedAt?.toDate().toLocaleString() || "N/A";
+
+        let requestedAt = "N/A";
+        if (data.requestedAt && typeof data.requestedAt.toDate === "function") {
+          requestedAt = data.requestedAt.toDate().toLocaleString();
+        }
 
         const div = document.createElement("div");
         div.innerHTML = `
@@ -138,5 +146,16 @@ function updateExtraStatus(id, newStatus) {
     })
     .catch((err) => {
       alert("Failed to update extra request: " + err.message);
+    });
+}
+function logout() {
+  firebase.auth().signOut()
+    .then(() => {
+      alert("Logged out successfully.");
+      window.location.href = "index.html";  // Redirect to login page
+    })
+    .catch((error) => {
+      console.error("Logout failed:", error);
+      alert("Error while logging out.");
     });
 }
