@@ -42,8 +42,14 @@
   <!-- History Section -->
   <div id="historySection" class="hidden">
     <h2>Your Booking History</h2>
+    <button onclick="refreshBookingHistory()">🔄 Refresh Status</button>
     <ul id="historyList"></ul>
   </div>
+  <!-- Add this inside the <body> but outside of the .container -->
+<button onclick="logout()" style="position: absolute; top: 20px; right: 20px; background: crimson; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">
+  Logout
+</button>
+
 
   <script src="dashboard.js"></script>
 </body>

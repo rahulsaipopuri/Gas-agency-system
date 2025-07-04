@@ -16,14 +16,13 @@ const db = firebase.firestore();
 
 let currentUser = null;
 
-// ✅ Detect logged-in user
+// Detect logged-in user
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
     console.log("Logged in as:", user.email);
   } else {
     alert("User not logged in. Please log in first.");
-    // Optionally redirect: window.location.href = "login.html";
   }
 });
 
@@ -44,8 +43,7 @@ function showHistory() {
   Promise.all([
     db.collection("bookings")
       .where("userId", "==", currentUser.uid)
-      .orderBy("createdAt", "desc")
-      .get(),
+      .get(), // removed .orderBy temporarily
     db.collection("extraCylinderRequests")
       .where("userId", "==", currentUser.uid)
       .get()
@@ -55,15 +53,25 @@ function showHistory() {
 
       bookingsSnap.forEach((doc) => {
         const data = doc.data();
+        const statusClass = data.status === "approved" ? "status-approved"
+                            : data.status === "denied" ? "status-denied"
+                            : "status-pending";
+
         const li = document.createElement("li");
-        li.textContent = `📦 ${data.name} | ${new Date(data.bookingDate.toDate()).toLocaleDateString()} | Status: ${data.status}`;
+        li.innerHTML = `📦 ${data.name} | ${new Date(data.bookingDate.toDate()).toLocaleDateString()} | 
+          <span class="${statusClass}">Status: ${data.status}</span>`;
         historyList.appendChild(li);
       });
 
       extrasSnap.forEach((doc) => {
         const data = doc.data();
+        const statusClass = data.status === "approved" ? "status-approved"
+                            : data.status === "denied" ? "status-denied"
+                            : "status-pending";
+
         const li = document.createElement("li");
-        li.textContent = `➕ Extra Cylinder Request on ${new Date(data.requestedAt.toDate()).toLocaleDateString()} | Status: ${data.status}`;
+        li.innerHTML = `➕ Extra Cylinder Request on ${new Date(data.requestedAt.toDate()).toLocaleDateString()} | 
+          <span class="${statusClass}">Status: ${data.status}</span>`;
         historyList.appendChild(li);
       });
 
@@ -72,12 +80,13 @@ function showHistory() {
       }
     })
     .catch((error) => {
-      console.error("Error fetching history:", error);
+      console.error("🔥 Firestore error:", error);  // Log error details
       alert("Something went wrong while checking your booking history.");
     });
 }
 
-// ✅ FIXED: Submit Booking (one per 30 days)
+
+// Submit Booking (1 per 30 days)
 function submitBooking() {
   if (!currentUser) {
     alert("User not logged in.");
@@ -100,8 +109,6 @@ function submitBooking() {
 
   const thirtyDaysAgoTS = firebase.firestore.Timestamp.fromDate(thirtyDaysAgo);
   const bookingDateTS = firebase.firestore.Timestamp.fromDate(bookingDate);
-
-  console.log("Checking for existing bookings after:", thirtyDaysAgoTS.toDate());
 
   db.collection("bookings")
     .where("userId", "==", currentUser.uid)
@@ -151,7 +158,6 @@ function submitBooking() {
     });
 }
 
-
 // Request Extra Cylinder
 function requestExtraCylinder() {
   if (!currentUser) return alert("User not logged in.");
@@ -166,5 +172,16 @@ function requestExtraCylinder() {
     .catch((err) => {
       console.error("Extra request failed:", err);
       alert("Something went wrong while submitting the extra cylinder request.");
+    });
+}
+function logout() {
+  firebase.auth().signOut()
+    .then(() => {
+      alert("Logged out successfully.");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      console.error("Logout error:", error);
+      alert("Error while logging out. Try again.");
     });
 }
