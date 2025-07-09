@@ -14,11 +14,20 @@ const db = firebase.firestore();
 
 // ✅ Only allow access for authenticated admin
 firebase.auth().onAuthStateChanged((user) => {
-  if (!user || user.email !== "admin@gmail.com") {
-    alert("You are not authorized to access this page.");
+  if (!user) {
+    alert("You are not logged in.");
     window.location.href = "admin-login.html";
+    return;
+  }
+
+  const email = user.email.toLowerCase(); // normalize case
+  if (email.startsWith("admin")) {
+    loadRequests(); // ✅ Allow access
   } else {
-    loadRequests();
+    alert("Access denied. Only admin users allowed.");
+    firebase.auth().signOut().then(() => {
+      window.location.href = "admin-login.html";
+    });
   }
 });
 
