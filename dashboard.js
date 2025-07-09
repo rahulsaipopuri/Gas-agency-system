@@ -160,20 +160,42 @@ function submitBooking() {
 
 // Request Extra Cylinder
 function requestExtraCylinder() {
-  if (!currentUser) return alert("User not logged in.");
+  if (!currentUser) {
+    alert("User not logged in.");
+    return;
+  }
 
-  db.collection("extraCylinderRequests").add({
-    userId: currentUser.uid,
-    email: currentUser.email,
-    status: "pending",
-    requestedAt: firebase.firestore.Timestamp.now()
-  })
-    .then(() => alert("Extra cylinder request submitted."))
-    .catch((err) => {
-      console.error("Extra request failed:", err);
-      alert("Something went wrong while submitting the extra cylinder request.");
+  // Check if there's already a pending request
+  db.collection("extraCylinderRequests")
+    .where("userId", "==", currentUser.uid)
+    .where("status", "==", "pending")
+    .get()
+    .then((snapshot) => {
+      if (!snapshot.empty) {
+        alert("You have already requested an extra cylinder.");
+      } else {
+        // No pending request, so add a new one
+        db.collection("extraCylinderRequests").add({
+          userId: currentUser.uid,
+          email: currentUser.email,
+          status: "pending",
+          requestedAt: firebase.firestore.Timestamp.now()
+        })
+        .then(() => {
+          alert("Extra cylinder request submitted.");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to submit request.");
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error checking requests:", error);
+      alert("Something went wrong.");
     });
 }
+
 function logout() {
   firebase.auth().signOut()
     .then(() => {
