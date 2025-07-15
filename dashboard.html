@@ -39,6 +39,13 @@
         <select id="paymentMethod">
           <option>Cash on Delivery</option>
           <option>Online Payment</option>
+          <div id="qrSection" class="hidden">
+  <p>Scan the QR Code to Pay:</p>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?data=upi://pay&size=200x200" alt="QR Code">
+  <p>After payment, click below:</p>
+  <button onclick="confirmPayment()">I've Paid</button>
+</div>
+
         </select>
 
         <br/><br/>

@@ -15,8 +15,8 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 let currentUser = null;
+let isOnlinePayment = false;
 
-// Detect logged-in user
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
@@ -41,21 +41,20 @@ function showHistory() {
   document.getElementById("historySection").classList.remove("hidden");
 
   Promise.all([
-    db.collection("bookings")
-      .where("userId", "==", currentUser.uid)
-      .get(), // removed .orderBy temporarily
-    db.collection("extraCylinderRequests")
-      .where("userId", "==", currentUser.uid)
-      .get()
+    db.collection("bookings").where("userId", "==", currentUser.uid).get(),
+    db.collection("extraCylinderRequests").where("userId", "==", currentUser.uid).get()
   ])
     .then(([bookingsSnap, extrasSnap]) => {
       historyList.innerHTML = "";
 
       bookingsSnap.forEach((doc) => {
         const data = doc.data();
-        const statusClass = data.status === "approved" ? "status-approved"
-                            : data.status === "denied" ? "status-denied"
-                            : "status-pending";
+        const statusClass =
+          data.status === "approved"
+            ? "status-approved"
+            : data.status === "denied"
+            ? "status-denied"
+            : "status-pending";
 
         const li = document.createElement("li");
         li.innerHTML = `📦 ${data.name} | ${new Date(data.bookingDate.toDate()).toLocaleDateString()} | 
@@ -65,9 +64,12 @@ function showHistory() {
 
       extrasSnap.forEach((doc) => {
         const data = doc.data();
-        const statusClass = data.status === "approved" ? "status-approved"
-                            : data.status === "denied" ? "status-denied"
-                            : "status-pending";
+        const statusClass =
+          data.status === "approved"
+            ? "status-approved"
+            : data.status === "denied"
+            ? "status-denied"
+            : "status-pending";
 
         const li = document.createElement("li");
         li.innerHTML = `➕ Extra Cylinder Request on ${new Date(data.requestedAt.toDate()).toLocaleDateString()} | 
@@ -80,11 +82,23 @@ function showHistory() {
       }
     })
     .catch((error) => {
-      console.error("🔥 Firestore error:", error);  // Log error details
+      console.error("🔥 Firestore error:", error);
       alert("Something went wrong while checking your booking history.");
     });
 }
 
+// Show/Hide QR when Online Payment selected
+document.getElementById("paymentMethod").addEventListener("change", function () {
+  const method = this.value;
+  isOnlinePayment = method === "Online Payment";
+  document.getElementById("qrSection").classList.toggle("hidden", !isOnlinePayment);
+});
+
+// Confirm payment button click
+function confirmPayment() {
+  document.getElementById("qrSection").classList.add("hidden");
+  alert("Payment confirmed. You can now submit your booking.");
+}
 
 // Submit Booking (1 per 30 days)
 function submitBooking() {
@@ -103,6 +117,14 @@ function submitBooking() {
     return;
   }
 
+  if (payment === "Online Payment" && isOnlinePayment) {
+    const qrVisible = !document.getElementById("qrSection").classList.contains("hidden");
+    if (qrVisible) {
+      alert("Please confirm payment by clicking 'I've Paid' before submitting.");
+      return;
+    }
+  }
+
   const bookingDate = new Date(date);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -116,7 +138,7 @@ function submitBooking() {
     .then((snap) => {
       let hasRecentBooking = false;
 
-      snap.forEach(doc => {
+      snap.forEach((doc) => {
         const data = doc.data();
         if (data.bookingDate && data.bookingDate.toDate() >= thirtyDaysAgoTS.toDate()) {
           hasRecentBooking = true;
@@ -139,13 +161,15 @@ function submitBooking() {
         createdAt: firebase.firestore.Timestamp.now()
       };
 
-      db.collection("bookings").add(data)
+      db.collection("bookings")
+        .add(data)
         .then(() => {
           alert("Booking submitted!");
           document.getElementById("name").value = "";
           document.getElementById("mobileNumber").value = "";
           document.getElementById("bookingDate").value = "";
           document.getElementById("paymentMethod").value = "Cash on Delivery";
+          document.getElementById("qrSection").classList.add("hidden");
         })
         .catch((error) => {
           console.error("❌ Booking submission failed:", error);
@@ -165,7 +189,6 @@ function requestExtraCylinder() {
     return;
   }
 
-  // Check if there's already a pending request
   db.collection("extraCylinderRequests")
     .where("userId", "==", currentUser.uid)
     .where("status", "==", "pending")
@@ -174,20 +197,20 @@ function requestExtraCylinder() {
       if (!snapshot.empty) {
         alert("You have already requested an extra cylinder.");
       } else {
-        // No pending request, so add a new one
-        db.collection("extraCylinderRequests").add({
-          userId: currentUser.uid,
-          email: currentUser.email,
-          status: "pending",
-          requestedAt: firebase.firestore.Timestamp.now()
-        })
-        .then(() => {
-          alert("Extra cylinder request submitted.");
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert("Failed to submit request.");
-        });
+        db.collection("extraCylinderRequests")
+          .add({
+            userId: currentUser.uid,
+            email: currentUser.email,
+            status: "pending",
+            requestedAt: firebase.firestore.Timestamp.now()
+          })
+          .then(() => {
+            alert("Extra cylinder request submitted.");
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Failed to submit request.");
+          });
       }
     })
     .catch((error) => {

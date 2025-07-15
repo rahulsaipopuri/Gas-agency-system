@@ -141,4 +141,25 @@ button[type="button"]:hover {
 .top-right button:hover {
   background-color: #218838;
 }
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .form-toggle button {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  input, button[type="button"] {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .forgot-password-link a {
+    font-size: 13px;
+  }
+}
+
 
