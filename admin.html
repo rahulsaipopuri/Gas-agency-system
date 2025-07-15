@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admin.css" />
+  <!-- ADD TO <head> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -13,6 +17,7 @@
 <body>
   <div class="container">
     <h2>Admin Dashboard</h2>
+    <button onclick="exportBookingsToExcel()">📤 Export Bookings to Excel</button>
 
     <!-- 🔎 Filter Bookings by Date -->
     <div class="filter-section">
@@ -20,7 +25,6 @@
       <input type="date" id="filterDate">
       <button onclick="loadRequests()">Apply Filter</button>
     </div>
-
     <!-- 🧾 Normal Booking Requests -->
     <div class="feature-section">
       <h3>Normal Booking Requests</h3>
@@ -38,5 +42,10 @@
 
 
   <script src="admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("Iboc4lPsDloL3bAur"); // Replace with your public key
+</script>
+
 </body>
 </html>

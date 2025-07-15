@@ -53,8 +53,17 @@ function registerUser() {
   const password = document.getElementById("regPassword").value;
 
   auth.createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      alert("User registered successfully!");
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      user.sendEmailVerification()
+        .then(() => {
+          alert("Registration successful! A verification email has been sent. Please verify before logging in.");
+        })
+        .catch((error) => {
+          alert("Error sending verification email: " + error.message);
+        });
+
       document.getElementById("regEmail").value = "";
       document.getElementById("regPassword").value = "";
     })
@@ -63,13 +72,22 @@ function registerUser() {
     });
 }
 
+
 // Login user
 function loginUser() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      if (!user.emailVerified) {
+        alert("Email not verified! Please check your inbox and verify your email.");
+        auth.signOut();
+        return;
+      }
+
       alert("Login successful!");
       window.location.href = "dashboard.html"; // user dashboard page
     })
@@ -77,6 +95,7 @@ function loginUser() {
       alert("Error: " + error.message);
     });
 }
+
 
 // Admin Login with fixed password & email check
 function adminLogin() {
@@ -100,4 +119,25 @@ function adminLogin() {
     alert("Wrong Admin Password");
   }
 }
+function forgotPassword() {
+  const email = document.getElementById("loginEmail").value;
+
+  if (!email) {
+    alert("Please enter your email in the login field before clicking 'Forgot Password'.");
+    return;
+  }
+
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert("A password reset email has been sent. Please check your inbox.");
+    })
+    .catch((error) => {
+      alert("Error: " + error.message);
+    });
+}
+// Show login form on page load
+window.onload = function () {
+  showForm('login');
+};
+
 

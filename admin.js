@@ -122,15 +122,36 @@ function loadExtraCylinderRequests() {
 }
 
 function updateBookingStatus(id, newStatus) {
-  db.collection("bookings").doc(id).update({ status: newStatus })
+  db.collection("bookings").doc(id).get().then((docSnap) => {
+    const data = docSnap.data();
+
+    db.collection("bookings").doc(id).update({ status: newStatus })
+      .then(() => {
+        sendBookingEmail(data.email, data.name || "Customer", newStatus); // <-- add this
+        alert("Booking status updated.");
+        loadRequests();
+      })
+      .catch((err) => {
+        alert("Failed to update booking: " + err.message);
+      });
+  });
+}
+function sendBookingEmail(toEmail, toName, status) {
+  const templateParams = {
+    to_email: toEmail,
+    to_name: toName,
+    status: status
+  };
+
+  emailjs.send("service_gk4khie", "template_p1rs2zd", templateParams)
     .then(() => {
-      alert("Booking status updated.");
-      loadRequests();
+      console.log("✅ Email sent to", toEmail);
     })
-    .catch((err) => {
-      alert("Failed to update booking: " + err.message);
+    .catch((error) => {
+      console.error("❌ Email failed:", error);
     });
 }
+
 
 function updateExtraStatus(id, newStatus) {
   db.collection("extraCylinderRequests").doc(id).update({ status: newStatus })
@@ -168,3 +189,39 @@ function logout() {
       alert("Error while logging out.");
     });
 }
+function exportBookingsToExcel() {
+  db.collection("bookings").get()
+    .then((querySnapshot) => {
+      const bookings = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        bookings.push({
+          Name: data.name || "N/A",
+          Email: data.email || "N/A",
+          Mobile: data.mobileNumber || "N/A",
+          Date: data.bookingDate?.toDate().toLocaleDateString() || "N/A",
+          Payment: data.paymentMethod || "N/A",
+          Status: data.status || "N/A"
+        });
+      });
+
+      if (bookings.length === 0) {
+        alert("No booking data to export.");
+        return;
+      }
+
+      // Generate worksheet and workbook
+      const worksheet = XLSX.utils.json_to_sheet(bookings);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
+
+      // Trigger download
+      XLSX.writeFile(workbook, "Booking_Requests.xlsx");
+    })
+    .catch((error) => {
+      console.error("Error exporting bookings:", error);
+      alert("Failed to export data.");
+    });
+}
+
