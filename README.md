@@ -156,8 +156,3 @@ Create a feature branch (git checkout -b feature/your-feature).
 Commit changes (git commit -m "Add your feature").
 Push to the branch (git push origin feature/your-feature).
 Open a pull request.
-
-License
-This project is licensed under the MIT License.
-Contact
-For queries, contact [Your Name] at [Your Email].
