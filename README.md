@@ -1,6 +1,6 @@
 Online Gas Cylinder Booking System
 Overview
-The Online Gas Cylinder Booking System is a web-based application developed to streamline the process of booking gas cylinders for users and managing booking requests for administrators. Built during an internship at [Internship Company Name], the project addresses inefficiencies in manual booking systems by providing a secure, user-friendly platform with features like user registration, cylinder booking, extra cylinder requests, payment options (cash/QR), and admin approval/denial workflows.
+The Online Gas Cylinder Booking System is a web-based application developed to streamline the process of booking gas cylinders for users and managing booking requests for administrators. Built during an internship at Unified Mentor, the project addresses inefficiencies in manual booking systems by providing a secure, user-friendly platform with features like user registration, cylinder booking, extra cylinder requests, payment options (cash/QR), and admin approval/denial workflows.
 The application uses HTML, CSS, and JavaScript for the frontend, with Firebase for authentication and data storage, and EmailJS for sending status update notifications. It supports role-based access: users can book cylinders and view history, while admins manage requests with real-time updates.
 Features
 
@@ -157,3 +157,4 @@ Create a feature branch (git checkout -b feature/your-feature).
 Commit changes (git commit -m "Add your feature").
 Push to the branch (git push origin feature/your-feature).
 Open a pull request.
+To Visit this page -https://rahulsaipopuri.github.io/Gas-agency-system/ 
