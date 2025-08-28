@@ -19,7 +19,6 @@ Real-time display of pending requests.
 
 Email Notifications: Automated emails sent via EmailJS for booking status updates.
 Responsive Design: Optimized for desktop and mobile devices.
-To Visit the site tap here -https://rahulsaipopuri.github.io/Gas-agency-system/
 Security: Admin access restricted to specific emails with a fixed password (prototype).
 
 Technologies Used
