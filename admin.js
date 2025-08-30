@@ -12,21 +12,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ✅ Only allow access for authenticated admin
+// Track if logout is intentional
+let isLoggingOut = false;
+
+// Only allow access for authenticated admin
 firebase.auth().onAuthStateChanged((user) => {
   if (!user) {
+    if (isLoggingOut) return;
     alert("You are not logged in.");
-    window.location.href = "admin-login.html";
+    window.location.href = "index.html";
     return;
   }
 
-  const email = user.email.toLowerCase(); // normalize case
-  if (email.startsWith("admin")) {
-    loadRequests(); // ✅ Allow access
+  const email = user.email.toLowerCase();
+  if (email === "admin@example.com") {
+    loadRequests();
   } else {
     alert("Access denied. Only admin users allowed.");
     firebase.auth().signOut().then(() => {
-      window.location.href = "admin-login.html";
+      window.location.href = "index.html";
     });
   }
 });
@@ -127,7 +131,8 @@ function updateBookingStatus(id, newStatus) {
 
     db.collection("bookings").doc(id).update({ status: newStatus })
       .then(() => {
-        sendBookingEmail(data.email, data.name || "Customer", newStatus); // <-- add this
+        // Comment out EmailJS for testing
+        console.log(`Mock email sent to ${data.email} with status ${newStatus}`);
         alert("Booking status updated.");
         loadRequests();
       })
@@ -136,13 +141,16 @@ function updateBookingStatus(id, newStatus) {
       });
   });
 }
+
 function sendBookingEmail(toEmail, toName, status) {
+  // Mock email sending for testing
+  console.log(`Mock email sent to ${toEmail} with status ${status}`);
+  /*
   const templateParams = {
     to_email: toEmail,
     to_name: toName,
     status: status
   };
-
   emailjs.send("service_gk4khie", "template_p1rs2zd", templateParams)
     .then(() => {
       console.log("✅ Email sent to", toEmail);
@@ -150,8 +158,8 @@ function sendBookingEmail(toEmail, toName, status) {
     .catch((error) => {
       console.error("❌ Email failed:", error);
     });
+  */
 }
-
 
 function updateExtraStatus(id, newStatus) {
   db.collection("extraCylinderRequests").doc(id).update({ status: newStatus })
@@ -178,50 +186,16 @@ function updateExtraStatus(id, newStatus) {
       alert("Failed to update extra request: " + err.message);
     });
 }
+
 function logout() {
+  isLoggingOut = true;
   firebase.auth().signOut()
     .then(() => {
-      alert("Logged out successfully.");
-      window.location.href = "index.html";  // Redirect to login page
+      alert("✅ Logout successful.");
+      window.location.href = "index.html";
     })
     .catch((error) => {
       console.error("Logout failed:", error);
       alert("Error while logging out.");
     });
 }
-function exportBookingsToExcel() {
-  db.collection("bookings").get()
-    .then((querySnapshot) => {
-      const bookings = [];
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        bookings.push({
-          Name: data.name || "N/A",
-          Email: data.email || "N/A",
-          Mobile: data.mobileNumber || "N/A",
-          Date: data.bookingDate?.toDate().toLocaleDateString() || "N/A",
-          Payment: data.paymentMethod || "N/A",
-          Status: data.status || "N/A"
-        });
-      });
-
-      if (bookings.length === 0) {
-        alert("No booking data to export.");
-        return;
-      }
-
-      // Generate worksheet and workbook
-      const worksheet = XLSX.utils.json_to_sheet(bookings);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
-
-      // Trigger download
-      XLSX.writeFile(workbook, "Booking_Requests.xlsx");
-    })
-    .catch((error) => {
-      console.error("Error exporting bookings:", error);
-      alert("Failed to export data.");
-    });
-}
-

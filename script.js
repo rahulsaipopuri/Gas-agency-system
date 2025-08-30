@@ -14,8 +14,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Allowed admin emails (replace with actual admins)
-const allowedAdmins = ["admin@gmail.com"];
+// Allowed admin emails
+const allowedAdmins = ["admin@example.com"];
 
 // Toggle form visibility
 function showForm(formType) {
@@ -43,7 +43,7 @@ function showForm(formType) {
   } else if (formType === 'admin') {
     adminContainer.style.display = 'block';
     adminForm.classList.remove('hidden');
-    topUserLoginBtn.classList.remove('hidden'); // Show User Login button on admin form
+    topUserLoginBtn.classList.remove('hidden');
   }
 }
 
@@ -52,55 +52,56 @@ function registerUser() {
   const email = document.getElementById("regEmail").value;
   const password = document.getElementById("regPassword").value;
 
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
+
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      const user = userCredential.user;
-
-      user.sendEmailVerification()
-        .then(() => {
-          alert("Registration successful! A verification email has been sent. Please verify before logging in.");
-        })
-        .catch((error) => {
-          alert("Error sending verification email: " + error.message);
-        });
-
+      // No email verification required
+      alert("User registered successfully!");
       document.getElementById("regEmail").value = "";
       document.getElementById("regPassword").value = "";
     })
     .catch((error) => {
-      alert("Error: " + error.message);
+      if (error.code === "auth/email-already-in-use") {
+        alert("Error: This email is already registered. Please use a different email or log in.");
+      } else {
+        alert("Error: " + error.message);
+      }
     });
 }
-
 
 // Login user
 function loginUser() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
+
   auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      if (!user.emailVerified) {
-        alert("Email not verified! Please check your inbox and verify your email.");
-        auth.signOut();
-        return;
-      }
-
+    .then(() => {
       alert("Login successful!");
-      window.location.href = "dashboard.html"; // user dashboard page
+      window.location.href = "dashboard.html";
     })
     .catch((error) => {
       alert("Error: " + error.message);
     });
 }
 
-
 // Admin Login with fixed password & email check
 function adminLogin() {
   const adminEmail = document.getElementById("adminEmail").value;
   const adminPass = document.getElementById("adminPassword").value;
+
+  if (!adminEmail || !adminPass) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
   if (adminPass === 'admin2005') {
     if (!allowedAdmins.includes(adminEmail)) {
@@ -110,7 +111,7 @@ function adminLogin() {
     auth.signInWithEmailAndPassword(adminEmail, adminPass)
       .then(() => {
         alert("Welcome Admin!");
-        window.location.href = "admin.html"; // admin dashboard page
+        window.location.href = "admin.html";
       })
       .catch((error) => {
         alert("Firebase Auth Error: " + error.message);
@@ -119,6 +120,8 @@ function adminLogin() {
     alert("Wrong Admin Password");
   }
 }
+
+// Forgot Password
 function forgotPassword() {
   const email = document.getElementById("loginEmail").value;
 
@@ -135,9 +138,3 @@ function forgotPassword() {
       alert("Error: " + error.message);
     });
 }
-// Show login form on page load
-window.onload = function () {
-  showForm('login');
-};
-
-
