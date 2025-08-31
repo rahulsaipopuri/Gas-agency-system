@@ -24,7 +24,6 @@ auth.onAuthStateChanged((user) => {
     console.log("Logged in as:", user.uid, user.email);
   } else {
     console.warn("No user logged in. Redirecting to login.");
-    alert("User not logged in. Please log in first.");
     window.location.href = "index.html";
   }
 });
@@ -248,4 +247,5 @@ function logout() {
       console.error("Logout error:", error);
       alert("Error while logging out. Try again.");
     });
+
 }
