@@ -100,7 +100,7 @@ firebase deploy
 Run the Application:
 
 Open index.html in a browser or access the deployed URL.
-Use an admin email (e.g., admin@gmail.com) with password admin2005 for admin access.
+Use an admin email (e.g., admin@example.com) with password admin2005 for admin access.
 Register as a user with any email and password for user access.
 
 
